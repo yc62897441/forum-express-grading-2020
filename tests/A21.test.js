@@ -49,12 +49,13 @@ describe('# A21: Like / Unlike', function() {
     after(async () => {
       this.ensureAuthenticated.restore();
       this.getUser.restore();
-      await db.Comment.destroy({where: {},truncate: true})
-      await db.Favorite.destroy({where: {},truncate: true})
-      await db.Like.destroy({where: {},truncate: true})
-      await db.User.destroy({where: {},truncate: true})
-      await db.Restaurant.destroy({where: {},truncate: true})    })
-
+      await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', null, { raw: true });
+      await db.Category.destroy({where: {},truncate: true, force: true,})
+      await db.Restaurant.destroy({where: {},truncate: true, force: true,})
+      await db.User.destroy({where: {},truncate: true, force: true,})
+      await db.Like.destroy({where: {},truncate: true, force: true,})
+      await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null, { raw: true });
+    })
   })
 
     
@@ -101,11 +102,12 @@ describe('# A21: Like / Unlike', function() {
     after(async () => {
       this.ensureAuthenticated.restore();
       this.getUser.restore();
-      await db.Comment.destroy({where: {},truncate: true})
-      await db.Favorite.destroy({where: {},truncate: true})
-      await db.Like.destroy({where: {},truncate: true})
-      await db.User.destroy({where: {},truncate: true})
-      await db.Restaurant.destroy({where: {},truncate: true})
+      await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0', null, { raw: true });
+      await db.Category.destroy({where: {},truncate: true, force: true,})
+      await db.Restaurant.destroy({where: {},truncate: true, force: true,})
+      await db.User.destroy({where: {},truncate: true, force: true,})
+      await db.Like.destroy({where: {},truncate: true, force: true,})
+      await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null, { raw: true });
     })
 
   })
