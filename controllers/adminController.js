@@ -61,10 +61,21 @@ const adminController = {
           opening_hours: req.body.opening_hours,
           description: req.body.description
         })
-        .then((restaurant) => {
-          req.flash('success_messages', 'restaurant was successfully to update')
-          return res.redirect('/admin/restaurants')
-        })
+          .then((restaurant) => {
+            req.flash('success_messages', 'restaurant was successfully to update')
+            return res.redirect('/admin/restaurants')
+          })
+      })
+  },
+
+  deleteRestaurant: (req, res) => {
+    return Restaurant.findByPk(req.params.id)
+      .then(restaurant => {
+        restaurant.destroy()
+      })
+      .then((restaurant) => {
+        req.flash('success_messages', 'restaurant was successfully deleted')
+        return res.redirect('/admin/restaurants')
       })
   }
 
