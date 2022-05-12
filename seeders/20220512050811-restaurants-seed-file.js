@@ -2,7 +2,7 @@
 const faker = require('faker')
 
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     /**
      * Add seed commands here.
      *
@@ -14,20 +14,21 @@ module.exports = {
     */
     await queryInterface.bulkInsert('Restaurants',
       Array.from({ length: 50 }).map((d, i) =>
-        ({
-          name: faker.name.findName(),
-          tel: faker.phone.phoneNumber(),
-          address: faker.address.streetAddress(),
-          opening_hours: '08:00',
-          image: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.random() * 100}`,
-          description: faker.lorem.text(),
-          createdAt: new Date(),
-          updatedAt: new Date()
-        })
+      ({
+        name: faker.name.findName(),
+        tel: faker.phone.phoneNumber(),
+        address: faker.address.streetAddress(),
+        opening_hours: '08:00',
+        image: `https://loremflickr.com/320/240/restaurant,food/?random=${Math.random() * 100}`,
+        description: faker.lorem.text(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        CategoryId: Math.floor(Math.random() * 6) * 10 + 1 // 加上這行
+      })
       ), {})
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
      *
