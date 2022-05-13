@@ -7,10 +7,24 @@
 </div>
 
 <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
-  <form action="/admin/categories" method="POST">
-    <input type="text" placeholder="name" name="name">
-    <button type="submit">Submit</button>
-  </form>
+  {{#if category}}
+  <div class="alert alert-warning ms-2 me-2" role="alert">
+    <p style="font-size: 1.2em;">請輸入更新名稱</p>
+    <form action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
+      <input type="text" placeholder="name" name="name" value="{{category.name}}">
+      <button type="submit">Update</button>
+      <a href="/admin/categories">or Create New</a>
+    </form>
+  </div>
+  {{else}}
+  <div>
+    <p style="font-size: 1.2em; color:black">請輸入餐廳名稱</p>
+    <form action="/admin/categories" method="POST">
+      <input type="text" placeholder="name" name="name">
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+  {{/if}}
 </div>
 
 <table class="table">
