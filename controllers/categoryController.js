@@ -1,6 +1,5 @@
 const db = require('../models')
 const Category = db.Category
-const Restaurant = db.Restaurant
 
 let categoryController = {
   getCategories: (req, res) => {
