@@ -4,13 +4,24 @@ const Category = db.Category
 
 const restController = {
   getRestaurants: (req, res) => {
-    return Restaurant.findAll({ include: Category }).then(restaurants => {
+    const whereQuery = {}
+    let categoryId = ''
+    if (req.query.categoryId) {
+      categoryId = Number(req.query.categoryId)
+      whereQuery.CategoryId = categoryId
+    }
+
+    // 當 categoryId 為空字串時，不會跑上面的 if 條件句，所以 whereQuery 仍是空物件 {}，因此下面的 where: whereQuery 是沒有比對條件的
+    return Restaurant.findAll({ include: Category, where: whereQuery }).then(restaurants => {
       const data = restaurants.map(r => ({
         ...r.dataValues,
         description: r.dataValues.description.substring(0, 50),
         categoryName: r.Category.name
       }))
-      return res.render('restaurants', { restaurants: data })
+      Category.findAll({ raw: true, nest: true })
+        .then(categories => {
+          return res.render('restaurants', { restaurants: data, categories: categories, categoryId: categoryId })
+        })
     })
   },
 
