@@ -146,21 +146,6 @@ const adminController = {
       })
   },
 
-  // toggleAdmin: (req, res) => {
-  //   return User.findByPk(req.params.id)
-  //     .then((user) => {
-  //       if (user.email === 'root@example.com') {
-  //         req.flash('error_messages', "Can not change this user's item!")
-  //         return res.redirect('/admin/users')
-  //       }
-  //       if (user.isAdmin) { return user.update({ isAdmin: false }) }
-  //       if (!user.isAdmin) { return user.update({ isAdmin: true }) }
-  //     }).then((user) => {
-  //       req.flash('success_messages', 'User was successfully to update')
-  //       return res.redirect('/admin/users')
-  //     })
-  // },
-
   toggleAdmin: (req, res) => {
     User.findByPk(req.params.id)
       .then(user => {
@@ -175,8 +160,7 @@ const adminController = {
         req.flash('success_messages', 'user was successfully to update')
         return res.redirect('/admin/users')
       })
-  }
-
+  },
   // 下面這種寫法會測試不過
   //   toggleAdmin: (req, res) => {
   //   const toggle = req.body.toggle
@@ -196,6 +180,8 @@ const adminController = {
   //       return res.redirect('/admin/users')
   //     })
   // }
+
+  
 }
 
 module.exports = adminController
