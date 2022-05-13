@@ -180,8 +180,6 @@ const adminController = {
   //       return res.redirect('/admin/users')
   //     })
   // }
-
-  
 }
 
 module.exports = adminController
