@@ -1,6 +1,8 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
 const Category = db.Category
+const Comment = db.Comment
+const User = db.User
 
 const pageLimit = 10
 
@@ -22,7 +24,7 @@ const restController = {
     return Restaurant.findAndCountAll({ include: Category, where: whereQuery, offset: offset, limit: pageLimit }).then(result => {
       const page = Number(req.query.page) || 1
       const pages = Math.ceil(result.count / pageLimit)
-      const totalPage = Array.from({ length: pages }).map((item, index) =>  index + 1 )
+      const totalPage = Array.from({ length: pages }).map((item, index) => index + 1)
       const prev = page - 1 < 1 ? 1 : page - 1
       const next = page + 1 > pages ? pages : page + 1
 
@@ -42,7 +44,7 @@ const restController = {
   },
 
   getRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.id, { include: [Category] })
+    return Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment, include: [User] }] })
       .then(restaurant => {
         return res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
