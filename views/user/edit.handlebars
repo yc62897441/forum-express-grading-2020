@@ -1,0 +1,43 @@
+{{!-- <form action="/users/{{user.id}}?_method=PUT" method="POST" style="width: 100%;">
+  <div class="text-center mb-4">
+    <h1 class="h3 mb-3 font-weight-normal">Edir Profile</h1>
+  </div>
+  <div class="form-label-group">
+    <label for="inputName">Name</label>
+    <input type="text" name="name" class="form-control" placeholder="Name" required autofocus value="{{user.name}}">
+  </div>
+
+  <div class="form-label-group">
+    <label for="inputEmail">Email</label>
+    <input type="text" name="email" class="form-control" placeholder="Email" required autofocus value="{{user.email}}">
+  </div>
+
+  <div class="form-group mt-2">
+    <label for="image">Image</label>
+    <input type="file" class="form-control-file" id="image" name="image">
+  </div>
+
+  <br />
+  <button class="btn btn-primary" type="submit">Submit</button>
+  <a class="btnbtn-secondary" href="/users/{{user.id}}">Canceal and Back</a>
+</form> --}}
+
+<form action="/users/{{user.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" name="name" id="name" placeholder="Enter name" value="{{user.name}}">
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="text" class="form-control" name="email" id="email" placeholder="Enter email" value="{{user.email}}">
+  </div>
+
+  <div class="form-group">
+    <label for="image">Image</label>
+    <input type="file" class="form-control-file" id="image" name="image">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
