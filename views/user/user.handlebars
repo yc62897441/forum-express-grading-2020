@@ -1,15 +1,15 @@
 <h1>User</h1>
 
 <div class="card d-flex flex-row" style="width: 50;">
-  {{!-- <img class="card-img-top" src="{{user.image}}" style="width: 250px;margin: 25px;"> --}}
   <img class="img-responsive center-block" src="{{user.image}}" style="width: 250px;margin-bottom: 25px;">
   <div class="card-body">
     <h5 class="card-title">{{user.name}}</h5>
     <h6 class="card-title">{{user.email}}</h6>
+    {{#ifCond reqParamsId reqUser.id}}
     <div class="row mb-2">
-      <a class="btn btn-warning mx-1" href="/users/{{user.id}}/edit">Edit</a>
-      {{!-- <button class="btn btn-warning mx-1" type="button" href="/users/{{user.id}}/edit">Edit</button> --}}
+      <a class="btn btn-warning mx-1" href="/users/{{reqUser.id}}/edit">Edit</a>
     </div>
+    {{/ifCond}}
     <div class="row">
       <button class="btn btn-primary mx-1">Followers</button>
       <button class="btn btn-primary mx-1">Following</button>

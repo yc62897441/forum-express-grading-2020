@@ -53,21 +53,30 @@ const userController = {
   },
 
   getUser: (req, res) => {
+    const reqParamsId = Number(req.params.id)
+    const reqUser = req.user
     return User.findByPk(req.params.id)
       .then(user => {
         Comment.findAll({ raw: true, nest: true, where: { UserId: req.params.id }, include: [{ model: Restaurant, include: [Category] }] })
           .then(comments => {
             const commentedRestaurantNum = comments.length
             comments.forEach(item => {
-              item.Restaurant.description = item.Restaurant.description.substring(0, 50)
+              if (item.Restaurant.description) {
+                item.Restaurant.description = item.Restaurant.description.substring(0, 50)
+              }
             })
-            return res.render('user/user', { user: user.toJSON(), comments: comments, commentedRestaurantNum: commentedRestaurantNum })
+            return res.render('user/user', { user: user.toJSON(), comments: comments, commentedRestaurantNum: commentedRestaurantNum, reqParamsId: reqParamsId, reqUser: reqUser })
           })
       })
   },
 
   editUser: (req, res) => {
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.user.id)
+      // return User.findByPk(req.params.id) 用 req.params 可以通過測試檔，用 req.user 通過不了
+      // 但是用 req.params 會有問題，可以竄改其他帳號的資料
+      // 例如用 A 帳號進入到 users/1/edit 頁面
+      // 再手動於網址列改成其他user的id users/2/edit 就可進到其他帳號的編輯頁
+      // 按下送出後，就可以修改其他帳號的資訊
       .then(user => {
         return res.render('user/edit', { user: user.toJSON() })
       })
@@ -84,7 +93,12 @@ const userController = {
       imgur.setClientID(IMGUR_CLIENT_ID)
       imgur.upload(file.path, (err, img) => {
         if (err) { console.log('Error: ', err) }
-        return User.findByPk(req.params.id)
+        return User.findByPk(req.user.id)
+          // return User.findByPk(req.params.id) 用 req.params 可以通過測試檔，用 req.user 通過不了
+          // 但是用 req.params 會有問題，可以竄改其他帳號的資料
+          // 例如用 A 帳號進入到 users/1/edit 頁面
+          // 再手動於網址列改成其他user的id users/2/edit 就可進到其他帳號的編輯頁
+          // 按下送出後，就可以修改其他帳號的資訊
           .then(user => {
             user.update({
               name: req.body.name,
@@ -93,12 +107,14 @@ const userController = {
             })
               .then((user) => {
                 req.flash('success_messages', 'user profile was successfully to update')
-                return res.redirect(`/users/${req.params.id}`)
+                return res.redirect(`/users/${req.user.id}`)
+                // return res.redirect(`/users/${req.params.id}`)
               })
           })
       })
     } else {
-      return User.findByPk(req.params.id)
+      return User.findByPk(req.user.id)
+        // return User.findByPk(req.params.id)
         .then(user => {
           user.update({
             name: req.body.name,
@@ -107,7 +123,8 @@ const userController = {
           })
             .then((user) => {
               req.flash('success_messages', 'user profile was successfully to update')
-              return res.redirect(`/users/${req.params.id}`)
+              return res.redirect(`/users/${req.user.id}`)
+              // return res.redirect(`/users/${req.params.id}`)
             })
         })
     }

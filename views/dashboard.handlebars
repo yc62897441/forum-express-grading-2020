@@ -8,10 +8,10 @@
     <h6 class="card-title">{{restaurant.Category.name}}</h6>
     <ul>
       <li>評論數：{{#if commnetsNum}}{{commnetsNum}}{{else}}0{{/if}}</li>
-      <li>瀏覽次數：</li>
+      <li>瀏覽次數：{{#if restaurant.viewCounts}}{{restaurant.viewCounts}}{{/if}}</li>
       <li>收藏數：</li>
     </ul>
-    <a href="javascript:history.back()">回上一頁</a>
+    <a href="/restaurants/{{restaurant.id}}">回上一頁</a>
   </div>
 </div>
 
