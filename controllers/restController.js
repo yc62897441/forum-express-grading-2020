@@ -48,6 +48,37 @@ const restController = {
       .then(restaurant => {
         return res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
+  },
+
+  getFeeds: (req, res) => {
+// 採用 Promise 寫法，可以同時存取 Restaurant 跟 Comment，兩者都完畢後再進入到下一層 then
+    Promise.all([
+      Restaurant.findAll({
+        raw: true, nest: true, limit: 10,
+        order: [['createdAt', 'desc']], include: [Category], raw: true, nest: true
+      }),
+      Comment.findAll({
+        raw: true, nest: true, limit: 10,
+        order: [['createdAt', 'desc']], include: [User, Restaurant], raw: true, nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        return res.render('feeds', { restaurants: restaurants, comments: comments })
+      })
+    // 需先存取 Restaurant，完畢後再存取 Comment，完畢後再進入到下一層 then
+    // return Restaurant.findAll({
+    //   raw: true, nest: true, limit: 10,
+    //   order: [['createdAt', 'desc']], include: [Category], raw: true, nest: true
+    // })
+    //   .then(restaurants => {
+    //     Comment.findAll({
+    //       raw: true, nest: true, limit: 10,
+    //       order: [['createdAt', 'desc']], include: [User, Restaurant], raw: true, nest: true
+    //     })
+    //       .then(comments => {
+    //         return res.render('feeds', { restaurants: restaurants, comments: comments })
+    //       })
+    //   })
   }
 }
 
