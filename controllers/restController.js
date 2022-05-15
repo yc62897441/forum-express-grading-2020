@@ -46,6 +46,7 @@ const restController = {
   getRestaurant: (req, res) => {
     return Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment, include: [User] }] })
       .then(restaurant => {
+        console.log('restaurant + 1')
         return res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
   },
@@ -82,21 +83,14 @@ const restController = {
   },
 
   getDashboard: (req, res) => {
-    Promise.all([
-      Restaurant.findByPk(req.params.id, { include: [Category], raw: true, nest: true }),
-      Comment.findAll({ raw: true, nest: true, where: { UserId: req.params.id } })
-    ])
-      .then(([restaurant, comments]) => {
-        const commnetsNum = comments.length
-        return res.render('dashboard', { restaurant: restaurant, commnetsNum: commnetsNum })
+    return Restaurant.findByPk(req.params.id, { include: [Category], raw: true, nest: true })
+      .then(restaurant => {
+        Comment.findAll({ where: { RestaurantId: restaurant.id }, raw: true, nest: true })
+          .then(comments => {
+            const commnetsNum = comments.length
+            return res.render('dashboard', { restaurant: restaurant, commnetsNum: commnetsNum })
+          })
       })
-
-
-    // return Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment }] })
-    //   .then(restaurant => {
-    //     console.log('restaurant', restaurant)
-    //     return res.render('dashboard', { restaurant: restaurant.toJSON() })
-    //   })
   }
 }
 

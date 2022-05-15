@@ -37,6 +37,22 @@ module.exports = {
         image: null,
         createdAt: new Date(),
         updatedAt: new Date()
+      }, {
+        email: 'c',
+        password: bcrypt.hashSync('c', bcrypt.genSaltSync(10), null),
+        isAdmin: true,
+        name: 'c',
+        image: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }, {
+        email: 'b',
+        password: bcrypt.hashSync('b', bcrypt.genSaltSync(10), null),
+        isAdmin: true,
+        name: 'b',
+        image: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     ], {})
   },
