@@ -51,7 +51,7 @@ const restController = {
   },
 
   getFeeds: (req, res) => {
-// 採用 Promise 寫法，可以同時存取 Restaurant 跟 Comment，兩者都完畢後再進入到下一層 then
+    // 採用 Promise 寫法，可以同時存取 Restaurant 跟 Comment，兩者都完畢後再進入到下一層 then
     Promise.all([
       Restaurant.findAll({
         raw: true, nest: true, limit: 10,
@@ -78,6 +78,24 @@ const restController = {
     //       .then(comments => {
     //         return res.render('feeds', { restaurants: restaurants, comments: comments })
     //       })
+    //   })
+  },
+
+  getDashboard: (req, res) => {
+    Promise.all([
+      Restaurant.findByPk(req.params.id, { include: [Category], raw: true, nest: true }),
+      Comment.findAll({ raw: true, nest: true, where: { UserId: req.params.id } })
+    ])
+      .then(([restaurant, comments]) => {
+        const commnetsNum = comments.length
+        return res.render('dashboard', { restaurant: restaurant, commnetsNum: commnetsNum })
+      })
+
+
+    // return Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment }] })
+    //   .then(restaurant => {
+    //     console.log('restaurant', restaurant)
+    //     return res.render('dashboard', { restaurant: restaurant.toJSON() })
     //   })
   }
 }

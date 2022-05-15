@@ -1,0 +1,19 @@
+<br />
+<br />
+
+<div class="card d-flex flex-row" style="width: 50">
+  <img class="img-responsive center-block" src="{{restaurant.image}}" style="width: 250px;margin: 25px;">
+  <div class="card-body">
+    <h5 class="card-title">{{restaurant.name}}</h5>
+    <h6 class="card-title">{{restaurant.Category.name}}</h6>
+    <ul>
+      <li>評論數：{{#if commnetsNum}}{{commnetsNum}}{{else}}0{{/if}}</li>
+      <li>瀏覽次數：</li>
+      <li>收藏數：</li>
+    </ul>
+    <a href="javascript:history.back()">回上一頁</a>
+  </div>
+</div>
+
+<br />
+<br />
