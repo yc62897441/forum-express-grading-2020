@@ -32,12 +32,13 @@ const restController = {
         ...r.dataValues,
         description: r.dataValues.description.substring(0, 50),
         categoryName: r.Category.name,
-        isFavorited: req.user.FavoritedRestaurants.map(d => d.id).includes(r.id)
+        isFavorited: req.user.FavoritedRestaurants.map(d => d.id).includes(r.id),
         // FavoritedRestaurants 是一個 array，裡面有 n 個被收藏的餐廳的 object {}
         // 餐廳 object {}，包含餐廳的 id, name, tel...等資訊
         // map(d => d.id) 就是把每筆餐廳的 id 都取出來，並把這些 id 們存到一個 array 中
         // 最後 array.includes(r.id)，檢視最愛餐廳的 id 們中，是否包含 r.id (當下這筆餐廳的 id)
         // 如是則回傳 true，如否則回傳 false
+        isLiked: req.user.LikedRestaurants.map(d => d.id).includes(r.id)
       }))
       Category.findAll({ raw: true, nest: true })
         .then(categories => {
@@ -53,10 +54,11 @@ const restController = {
     return Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment, include: [User] }] })
       .then(restaurant => {
         const isFavorited = req.user.FavoritedRestaurants.map(d => d.id).includes(restaurant.id)
+        const isLiked = req.user.LikedRestaurants.map(d => d.id).includes(restaurant.id)
         restaurant.update({
           viewCounts: restaurant.viewCounts + 1
         }).then(restaurant => {
-          return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited: isFavorited })
+          return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited: isFavorited, isLiked: isLiked })
         })
       })
   },
