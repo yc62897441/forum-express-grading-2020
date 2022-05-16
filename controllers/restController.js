@@ -31,7 +31,13 @@ const restController = {
       const data = result.rows.map(r => ({
         ...r.dataValues,
         description: r.dataValues.description.substring(0, 50),
-        categoryName: r.Category.name
+        categoryName: r.Category.name,
+        isFavorited: req.user.FavoritedRestaurants.map(d => d.id).includes(r.id)
+        // FavoritedRestaurants 是一個 array，裡面有 n 個被收藏的餐廳的 object {}
+        // 餐廳 object {}，包含餐廳的 id, name, tel...等資訊
+        // map(d => d.id) 就是把每筆餐廳的 id 都取出來，並把這些 id 們存到一個 array 中
+        // 最後 array.includes(r.id)，檢視最愛餐廳的 id 們中，是否包含 r.id (當下這筆餐廳的 id)
+        // 如是則回傳 true，如否則回傳 false
       }))
       Category.findAll({ raw: true, nest: true })
         .then(categories => {
@@ -46,16 +52,17 @@ const restController = {
   getRestaurant: (req, res) => {
     return Restaurant.findByPk(req.params.id, { include: [Category, { model: Comment, include: [User] }] })
       .then(restaurant => {
+        const isFavorited = req.user.FavoritedRestaurants.map(d => d.id).includes(restaurant.id)
         restaurant.update({
           viewCounts: restaurant.viewCounts + 1
         }).then(restaurant => {
-          return res.render('restaurant', { restaurant: restaurant.toJSON() })
+          return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited: isFavorited })
         })
       })
   },
 
   getFeeds: (req, res) => {
-    // 採用 Promise 寫法，可以同時存取 Restaurant 跟 Comment，兩者都完畢後再進入到下一層 then
+    // ① 採用 Promise 寫法，可以同時存取 Restaurant 跟 Comment，兩者都完畢後再進入到下一層 then
     Promise.all([
       Restaurant.findAll({
         raw: true, nest: true, limit: 10,
@@ -69,7 +76,7 @@ const restController = {
       .then(([restaurants, comments]) => {
         return res.render('feeds', { restaurants: restaurants, comments: comments })
       })
-    // 需先存取 Restaurant，完畢後再存取 Comment，完畢後再進入到下一層 then
+    // ② 需先存取 Restaurant，完畢後再存取 Comment，完畢後再進入到下一層 then
     // return Restaurant.findAll({
     //   raw: true, nest: true, limit: 10,
     //   order: [['createdAt', 'desc']], include: [Category], raw: true, nest: true
