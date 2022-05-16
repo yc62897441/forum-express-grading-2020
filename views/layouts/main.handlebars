@@ -19,8 +19,6 @@
       </ul>
       <div>
         {{#if reqUser}}
-
-
         {{#if reqUser.isAdmin}}
         <a href="/admin" style="color: white;margin-right: 10px;">Admin 後台</a>
         {{/if}}
@@ -29,13 +27,7 @@
         <a href="/users/{{reqUser.id}}" style="color: white;margin-right: 10px;">Profile</a>
         <a href="/logout"><button class="btn btn-outline-success my-2 my-sm-0">LogOut</button></a>
         {{/if}}
-
-
-
         {{else}}
-
-
-
         {{#if user.isAdmin}}
         <a href="/admin" style="color: white;margin-right: 10px;">Admin 後台</a>
         {{/if}}
@@ -44,15 +36,7 @@
         <a href="/users/{{user.id}}" style="color: white;margin-right: 10px;">Profile</a>
         <a href="/logout"><button class="btn btn-outline-success my-2 my-sm-0">LogOut</button></a>
         {{/if}}
-
-
         {{/if}}
-
-
-
-
-
-
       </div>
     </div>
   </nav>
