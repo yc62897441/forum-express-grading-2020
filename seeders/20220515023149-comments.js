@@ -11,10 +11,10 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('Comments', Array.from({ length: 5 }).map((item, index) => ({
+    await queryInterface.bulkInsert('Comments', Array.from({ length: 10 }).map((item, index) => ({
       text: `Comment ${index}`,
-      UserId: index % 2 + 1,
-      RestaurantId: 204 + index,
+      UserId: index % 3 + 1,
+      RestaurantId: Math.floor(Math.random() * 10) + 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }))
