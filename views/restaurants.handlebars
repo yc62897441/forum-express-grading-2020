@@ -5,6 +5,9 @@
   <li class="nav-item">
     <a class="nav-link" href="/restaurants/feeds">最新動態</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/users/top">美食達人</a>
+  </li>
 </ul>
 <br />
 
@@ -48,7 +51,8 @@
           <form class="mx-2" action="/like/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
               class="btn btn-danger">Dislike</button></form>
           {{else}}
-          <form class="mx-2" action="/like/{{this.id}}" method="POST"><button type="submit" class="btn btn-primary">Like</button>
+          <form class="mx-2" action="/like/{{this.id}}" method="POST"><button type="submit"
+              class="btn btn-primary">Like</button>
           </form>
           {{/if}}
         </div>
