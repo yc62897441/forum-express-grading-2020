@@ -58,17 +58,31 @@ const userController = {
   getUser: (req, res) => {
     const reqParamsId = Number(req.params.id)
     const reqUser = req.user
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id, { include: [{ model: User, as: 'Followers' }, { model: User, as: 'Followings' }, { model: Restaurant, as: 'FavoritedRestaurants' }] })
       .then(user => {
         Comment.findAll({ raw: true, nest: true, where: { UserId: req.params.id }, include: [{ model: Restaurant, include: [Category] }] })
           .then(comments => {
-            const commentedRestaurantNum = comments.length
+            let commentedRestaurantNum = 0
+            const commentsDealed = []  // 存放挑選後的 comments
+            const commentsRestaurantsId = [] // 存放每筆 comment 的 restaurant id
             comments.forEach(item => {
-              if (item.Restaurant.description) {
-                item.Restaurant.description = item.Restaurant.description.substring(0, 50)
+              // 如果這筆 comment 的 restaurant id 還不存在 commentsRestaurantsId，則繼續執行下去
+              // 如果已經存在 commentsRestaurantsId，這跳過這筆 comment
+              // 避免有對同一家 restaurant 有重複的 1 筆以上的 comment
+              if (!commentsRestaurantsId.includes(item.Restaurant.id)) {
+                commentsRestaurantsId.push(item.Restaurant.id)
+                if (item.Restaurant.description) {
+                  item.Restaurant.description = item.Restaurant.description.substring(0, 50)
+                }
+                // 把這筆 comment 加到 commentsDealed
+                commentsDealed.push(item)
               }
             })
-            return res.render('user/user', { user: user.toJSON(), comments: comments, commentedRestaurantNum: commentedRestaurantNum, reqParamsId: reqParamsId, reqUser: reqUser })
+            commentedRestaurantNum = commentsDealed.length
+
+            const userIsFollowed = req.user.Followings.map(d => d.id).includes(user.id)
+
+            return res.render('user/user', { user: user.toJSON(), comments: commentsDealed, commentedRestaurantNum: commentedRestaurantNum, reqParamsId: reqParamsId, reqUser: reqUser, userIsFollowed: userIsFollowed })
           })
       })
   },

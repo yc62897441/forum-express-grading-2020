@@ -6,15 +6,28 @@
     <h5 class="card-title">{{user.name}}</h5>
     <h6 class="card-title">{{user.email}}</h6>
     {{#ifCond reqParamsId reqUser.id}}
-    <div class="row mb-2">
+    <div class="row mx-1 my-1">
       <a class="btn btn-warning mx-1" href="/users/{{reqUser.id}}/edit">Edit</a>
     </div>
-    {{/ifCond}}
-    <div class="row">
-      <button class="btn btn-primary mx-1">Followers</button>
-      <button class="btn btn-primary mx-1">Following</button>
-      <button class="btn btn-primary mx-1">Favorites</button>
+    {{else}}
+    <div class="row mx-1 my-1">
+      {{#if userIsFollowed}}
+      <form action="/following/{{user.id}}?_method=DELETE" method="POST" style="display: contents;"><button
+          type="submit" class="btn btn-danger">取消追蹤</button></form>
+      {{else}}
+      <form action="/following/{{user.id}}" method="POST" style="display: contents;"><button type="submit"
+          class="btn btn-primary">追蹤</button></form>
+      {{/if}}
     </div>
+    {{/ifCond}}
+
+    <ul>
+      <li>Followings：{{#if user.Followings}}{{user.Followings.length}}位追蹤對象{{/if}}</li>
+      <li>Followers：{{#if user.Followers}}{{user.Followers.length}}位追蹤者{{/if}}</li>
+      <li>Comments：{{#if commentedRestaurantNum}}{{commentedRestaurantNum}}家已評論餐廳{{/if}}</li>
+      <li>Favorite Restaurants：{{#if user.FavoritedRestaurants}}{{user.FavoritedRestaurants.length}}家已追蹤餐廳{{/if}}</li>
+    </ul>
+
     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
       content.
     </p>
@@ -23,7 +36,92 @@
 
 <br />
 
-<div>
+<div class="row">
+
+  <div class="col-4">
+    <h3>Followings {{#if user.Followings}}{{user.Followings.length}}位追蹤對象{{/if}}</h3>
+    <div>
+      <div class="row">
+        {{#each user.Followings}}
+        <div class="col-4">
+          <a href="/users/{{this.id}}">
+            <div class="card mb-1 shadow-sm">
+              <img class="card-img-top" src="{{this.image}}" alt="Card image cap" width="143px" height="90px">
+              <p class="card-text" style="font-size: 0.5em;">
+                {{this.name}}
+              </p>
+            </div>
+          </a>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-8">
+    <h3>Comments {{#if commentedRestaurantNum}}{{commentedRestaurantNum}}家已評論餐廳{{/if}}</h3>
+    <div>
+      <div class="row">
+        {{#each comments}}
+        <div class="col-2">
+          <a href="/restaurants/{{this.Restaurant.id}}">
+            <div class="card mb-1 shadow-sm">
+              <img class="card-img-top" src="{{this.Restaurant.image}}" alt="Card image cap" width="143px"
+                height="90px">
+              <p class="card-text" style="font-size: 0.5em;">
+                {{this.Restaurant.name}}
+              </p>
+            </div>
+          </a>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-4">
+    <h3>Followers {{#if user.Followers}}{{user.Followers.length}}位追蹤者{{/if}}</h3>
+    <div>
+      <div class="row">
+        {{#each user.Followers}}
+        <div class="col-4">
+          <a href="/users/{{this.id}}">
+            <div class="card mb-1 shadow-sm">
+              <img class="card-img-top" src="{{this.image}}" alt="Card image cap" width="143px" height="90px">
+              <p class="card-text" style="font-size: 0.5em;">
+                {{this.name}}
+              </p>
+            </div>
+          </a>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-8">
+    <h3>Favorite Restaurants {{#if user.FavoritedRestaurants}}{{user.FavoritedRestaurants.length}}家已追蹤餐廳{{/if}}</h3>
+    <div>
+      <div class="row">
+        {{#each user.FavoritedRestaurants}}
+        <div class="col-2">
+          <a href="/restaurants/{{this.id}}">
+            <div class="card mb-1 shadow-sm">
+              <img class="card-img-top" src="{{this.image}}" alt="Card image cap" width="143px" height="90px">
+              <p class="card-text" style="font-size: 0.5em;">
+                {{this.name}}
+              </p>
+            </div>
+          </a>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{{!-- <div>
   <h2>{{#if commentedRestaurantNum}}{{commentedRestaurantNum}}家{{/if}}已評論餐廳</h2>
   <div class="row">
     {{#each comments}}
@@ -44,4 +142,4 @@
     {{/each}}
   </div>
 </div>
-<br />
+<br /> --}}
