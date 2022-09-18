@@ -18,7 +18,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.engine('handlebars', exphbs.engine({ defaultLayout: 'main', helpers: require('./config/handlebars-helpers') }))
 app.set('view engine', 'handlebars')
-
+app.use(express.static('views/assets'))
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
