@@ -3,6 +3,7 @@ const Restaurant = db.Restaurant
 const Category = db.Category
 const Comment = db.Comment
 const User = db.User
+const Favorite = db.Favorite
 
 const pageLimit = 10
 
@@ -99,8 +100,12 @@ const restController = {
       .then(restaurant => {
         Comment.findAll({ where: { RestaurantId: restaurant.id }, raw: true, nest: true })
           .then(comments => {
-            const commnetsNum = comments.length
-            return res.render('dashboard', { restaurant: restaurant, commnetsNum: commnetsNum })
+            const commentsNum = comments.length
+            Favorite.findAll({ where: { RestaurantId: restaurant.id }, raw: true, nest: true })
+              .then(favorites => {
+                const favoriteNum = favorites.length
+                return res.render('dashboard', { restaurant: restaurant, commentsNum: commentsNum, favoriteNum: favoriteNum })
+              })
           })
       })
   },
@@ -113,7 +118,7 @@ const restController = {
           FavoritedCount: restaurant.FavoritedUsers.length,
           description: restaurant.description.substring(0, 50),
           isFavorited: restaurant.FavoritedUsers.map(d => d.id).includes(req.user.id),
-          isLiked:  restaurant.LikedUsers.map(d => d.id).includes(req.user.id)
+          isLiked: restaurant.LikedUsers.map(d => d.id).includes(req.user.id)
         }))
         restaurants = restaurants.sort((a, b) => b.FavoritedCount - a.FavoritedCount)
         restaurants = restaurants.slice(0, 10)
