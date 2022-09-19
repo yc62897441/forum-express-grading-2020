@@ -28,9 +28,12 @@
       <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
 
       <td>{{#if this.isAdmin}}
+        {{#ifCond this.email 'root@example.com'}}
+        {{else}}
         <form action="/admin/users/{{this.id}}/toggleAdmin?_method=PUT" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-link" name="toggle" value="0">set as user</button>
         </form>
+        {{/ifCond}}
         {{else}}
         <form action="/admin/users/{{this.id}}/toggleAdmin?_method=PUT" method="POST" style="display: inline;">
           <button type="submit" class="btn btn-link" name="toggle" value="1">set as admin</button>
