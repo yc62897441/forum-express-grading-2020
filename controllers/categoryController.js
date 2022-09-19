@@ -40,12 +40,21 @@ let categoryController = {
 
     return Category.findByPk(req.params.id)
       .then(category => {
-        category.update({
-          name: req.body.name
-        })
+        // 如果要編輯的是 "其他" 餐廳類別，不執行，直接return
+        if (category.name === '其他') {
+          return res.redirect('/admin/categories')
+        } else {
+          category.update({
+            name: req.body.name
+          })
+            .then(category => {
+              res.redirect('/admin/categories')
+            })
+        }
       })
-      .then(category => {
-        res.redirect('/admin/categories')
+      .catch(error => {
+        console.log(error)
+        return res.redirect('/admin/categories')
       })
   },
 
