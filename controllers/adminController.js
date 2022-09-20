@@ -2,6 +2,9 @@ const db = require('../models')
 const Restaurant = db.Restaurant
 const User = db.User
 const Category = db.Category
+const Like = db.Like
+const Favorite = db.Favorite
+const Comment = db.Comment
 const fs = require('fs')
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
@@ -99,7 +102,7 @@ const adminController = {
               address: req.body.address,
               opening_hours: req.body.opening_hours,
               description: req.body.description,
-              image: file ? img.data.link : restaurant.image, 
+              image: file ? img.data.link : restaurant.image,
               CategoryId: req.body.categoryId
             })
               .then((restaurant) => {
@@ -128,13 +131,42 @@ const adminController = {
     }
   },
 
-  deleteRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.id)
+  deleteRestaurant: async (req, res) => {
+    // 刪除餐廳，以及相關的 favorites、comments、likes
+    Restaurant.findByPk(req.params.id)
       .then(restaurant => {
         restaurant.destroy()
+          .then(() => {
+            Favorite.findAll({ where: { RestaurantId: req.params.id } })
+              .then(favorites => {
+                Promise.all(favorites.map(favorite => {
+                  favorite.destroy()
+                }))
+              })
+              .then(() => {
+                Comment.findAll({ where: { RestaurantId: req.params.id } })
+                  .then(comments => {
+                    Promise.all(comments.map(comment => {
+                      comment.destroy()
+                    }))
+                  })
+                  .then(() => {
+                    Like.findAll({ where: { RestaurantId: req.params.id } })
+                      .then(likes => {
+                        Promise.all(likes.map(like => {
+                          like.destroy()
+                        }))
+                      })
+                      .then(() => {
+                        req.flash('success_messages', 'restaurant was successfully deleted')
+                        return res.redirect('/admin/restaurants')
+                      })
+                  })
+              })
+          })
       })
-      .then((restaurant) => {
-        req.flash('success_messages', 'restaurant was successfully deleted')
+      .catch(error => {
+        console.log(error)
         return res.redirect('/admin/restaurants')
       })
   },
